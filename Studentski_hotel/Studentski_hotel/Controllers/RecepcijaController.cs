@@ -42,7 +42,7 @@ namespace Studentski_hotel.Controllers
                     obavijestID=o.ID,
                     Naslov = o.Naslov,
                     Text = o.Text.Trim(),
-                    RecepcionerID = o.RecepcioerID,
+                    RecepcionerID = o.OsobljeID,
                     datum_dodavanja=o.DatumVrijeme
                 }).Single();
               
@@ -64,7 +64,7 @@ namespace Studentski_hotel.Controllers
                 Naslov = o.Naslov,
                 Text = o.Text,
                 DatumObj = o.DatumVrijeme,
-                 ImeRecepcionera = o.Recepcioer.Ime + " " + o.Recepcioer.Prezime
+                 ImeRecepcionera = o.Osoblje.Ime + " " + o.Osoblje.Prezime
                 
             }).ToList();
 
@@ -80,7 +80,7 @@ namespace Studentski_hotel.Controllers
         {
             
                 var user = await _userManager.GetUserAsync(User);
-                var referent = dbContext.Recepcioners.Where(a => a.KorisnikID == user.Id).FirstOrDefault();
+                var referent = dbContext.Osobljes.Where(a => a.KorisnikID == user.Id).FirstOrDefault();
                 Obavijest ob;
             if (obj.obavijestID == 0)
             {
@@ -98,7 +98,7 @@ namespace Studentski_hotel.Controllers
             ob.Naslov = obj.Naslov;
             ob.Text = obj.Text;
 
-            ob.RecepcioerID = referent.Korisnik.Recepcioer.ID;
+            ob.OsobljeID = referent.Korisnik.Osoblje.ID;
 
             dbContext.SaveChanges();
 
@@ -124,7 +124,7 @@ namespace Studentski_hotel.Controllers
             po.obavijestID = ob.ID;
             po.Naslov = ob.Naslov;
             po.Text = ob.Text;
-            po.ImeRecepcionera = ob.Recepcioer.Ime + " " + ob.Recepcioer.Prezime;
+            po.ImeRecepcionera = ob.Osoblje.Ime + " " + ob.Osoblje.Prezime;
             po.DatumObj = ob.DatumVrijeme;
            
 

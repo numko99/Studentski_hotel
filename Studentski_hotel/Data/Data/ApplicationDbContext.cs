@@ -24,7 +24,6 @@ namespace Studentski_hotel.Data
         public DbSet<Pol> Pols { get; set; }
         public DbSet<Kartica> Karticas { get; set; }
         public DbSet<Konkurs> Konkurs { get; set; }
-        public DbSet<Kuharica> Kuharicas { get; set; }
         public DbSet<Lokacija> Lokacijas { get; set; }
         public DbSet<NacinUplate> NacinUplates { get; set; }
         public DbSet<NajavaOdlaska> NajavaOdlaskas { get; set; }
@@ -42,11 +41,11 @@ namespace Studentski_hotel.Data
         public DbSet<VrstaRazlogaOdbijanja> vrstaRazlogaOdbijanjas { get; set; }
         public DbSet<VrstaZahtjeva> VrstaZahtjevas { get; set; }
         public DbSet<Zahtjev> Zahtjevs { get; set; }
-        public DbSet<Recepcioer> Recepcioners { get; set; }
         public DbSet<Korisnik> Korisniks { get; set; }
         public DbSet<Student> Students { get; set; }
-        public DbSet<Referent> Referents { get; set; }
         public DbSet<Admin> Admins { get; set; }
+        public DbSet<Rola> Rolas { get; set; }
+
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             var cascadeFKs = modelBuilder.Model.GetEntityTypes()
@@ -60,10 +59,7 @@ namespace Studentski_hotel.Data
 
             base.OnModelCreating(modelBuilder);
 
-            modelBuilder.Entity<Korisnik>()
-            .HasOne<Recepcioer>(s => s.Recepcioer)
-            .WithOne(ad => ad.Korisnik)
-            .HasForeignKey<Recepcioer>(ad => ad.KorisnikID);
+
 
             modelBuilder.Entity<Korisnik>()
             .HasOne<Student>(s => s.Student)
@@ -71,9 +67,9 @@ namespace Studentski_hotel.Data
             .HasForeignKey<Student>(ad => ad.KorisnikID);
 
             modelBuilder.Entity<Korisnik>()
-        .HasOne<Referent>(s => s.Referent)
+        .HasOne<Osoblje>(s => s.Osoblje)
         .WithOne(ad => ad.Korisnik)
-        .HasForeignKey<Referent>(ad => ad.KorisnikID);
+        .HasForeignKey<Osoblje>(ad => ad.KorisnikID);
 
 
             modelBuilder.Entity<Korisnik>()
@@ -81,10 +77,7 @@ namespace Studentski_hotel.Data
             .WithOne(ad => ad.Korisnik)
             .HasForeignKey<Admin>(ad => ad.KorisnikID);
 
-            modelBuilder.Entity<Korisnik>()
-            .HasOne<Kuharica>(s => s.Kuharica)
-            .WithOne(ad => ad.Korisnik)
-            .HasForeignKey<Kuharica>(ad => ad.KorisnikID);
+ 
         }
 
     }

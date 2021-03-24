@@ -45,7 +45,7 @@ namespace Studentski_hotel.Controllers
                 Naslov = o.Naslov,
                 Text = o.Text,
                 DatumObj = o.DatumVrijeme,
-                ImeRecepcionera=o.Recepcioer.Ime + " " + o.Recepcioer.Prezime
+                ImeRecepcionera=o.Osoblje.Ime + " " + o.Osoblje.Prezime
             }).ToList();
 
             all.obavijesti = all.obavijesti.OrderByDescending(x => x.DatumObj).ToList();
@@ -69,7 +69,7 @@ namespace Studentski_hotel.Controllers
             Naslov = ob.Naslov,
             Text = ob.Text,
             DatumObj = ob.DatumVrijeme,
-            ImeRecepcionera = ob.Recepcioer.Ime + " " + ob.Recepcioer.Prezime
+            ImeRecepcionera = ob.Osoblje.Ime + " " + ob.Osoblje.Prezime
         }).Single();
 
 

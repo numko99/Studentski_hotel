@@ -8,9 +8,8 @@ namespace DBdata.EntityModels
     public class Korisnik : IdentityUser
     {
         public Student Student { get; set; }
-        public Recepcioer Recepcioer { get; set; }
-        public Referent Referent { get; set; }
+
         public Admin Admin { get; set; }
-        public Kuharica Kuharica { get; set; }
+        public Osoblje Osoblje { get; set; }
     }
 }

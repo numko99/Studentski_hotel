@@ -3,15 +3,17 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Studentski_hotel.Data;
 
 namespace DBdata.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20210324102123_osoblje")]
+    partial class osoblje
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -75,7 +77,7 @@ namespace DBdata.Migrations
                     b.Property<int>("KarticaID")
                         .HasColumnType("int");
 
-                    b.Property<int>("KuharicaID")
+                    b.Property<int>("OsobljeID")
                         .HasColumnType("int");
 
                     b.Property<string>("Tekst")
@@ -85,7 +87,7 @@ namespace DBdata.Migrations
 
                     b.HasIndex("KarticaID");
 
-                    b.HasIndex("KuharicaID");
+                    b.HasIndex("OsobljeID");
 
                     b.ToTable("DnevnaPonudas");
                 });
@@ -430,7 +432,7 @@ namespace DBdata.Migrations
                     b.Property<string>("Naslov")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int>("RecepcioerID")
+                    b.Property<int>("OsobljeID")
                         .HasColumnType("int");
 
                     b.Property<string>("Text")
@@ -438,7 +440,7 @@ namespace DBdata.Migrations
 
                     b.HasKey("ID");
 
-                    b.HasIndex("RecepcioerID");
+                    b.HasIndex("OsobljeID");
 
                     b.ToTable("Obavijests");
                 });
@@ -459,12 +461,12 @@ namespace DBdata.Migrations
                     b.Property<float>("Iznos")
                         .HasColumnType("real");
 
-                    b.Property<int>("KuharicaID")
+                    b.Property<int>("OsobljeID")
                         .HasColumnType("int");
 
                     b.HasKey("ID");
 
-                    b.HasIndex("KuharicaID");
+                    b.HasIndex("OsobljeID");
 
                     b.ToTable("Obroks");
                 });
@@ -482,15 +484,14 @@ namespace DBdata.Migrations
                     b.Property<string>("DatumZaposlenja")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("Discriminator")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
                     b.Property<string>("GodinaZaposlenja")
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Ime")
                         .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("KorisnikID")
+                        .HasColumnType("nvarchar(450)");
 
                     b.Property<int>("LokacijaID")
                         .HasColumnType("int");
@@ -501,15 +502,22 @@ namespace DBdata.Migrations
                     b.Property<string>("Prezime")
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<int>("RolaID")
+                        .HasColumnType("int");
+
                     b.HasKey("ID");
+
+                    b.HasIndex("KorisnikID")
+                        .IsUnique()
+                        .HasFilter("[KorisnikID] IS NOT NULL");
 
                     b.HasIndex("LokacijaID");
 
                     b.HasIndex("PolID");
 
-                    b.ToTable("Osobljes");
+                    b.HasIndex("RolaID");
 
-                    b.HasDiscriminator<string>("Discriminator").HasValue("Osoblje");
+                    b.ToTable("Osobljes");
                 });
 
             modelBuilder.Entity("DBdata.EntityModels.Pol", b =>
@@ -550,6 +558,21 @@ namespace DBdata.Migrations
                     b.HasIndex("VrstaStanjaKonkursaID");
 
                     b.ToTable("RezultatKonkursas");
+                });
+
+            modelBuilder.Entity("DBdata.EntityModels.Rola", b =>
+                {
+                    b.Property<int>("ID")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<string>("Naziv")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("ID");
+
+                    b.ToTable("Rolas");
                 });
 
             modelBuilder.Entity("DBdata.EntityModels.Soba", b =>
@@ -726,7 +749,7 @@ namespace DBdata.Migrations
                     b.Property<int>("NacinUplateID")
                         .HasColumnType("int");
 
-                    b.Property<int>("RecepcioerID")
+                    b.Property<int>("OsobljeID")
                         .HasColumnType("int");
 
                     b.Property<float>("Stanje")
@@ -739,7 +762,7 @@ namespace DBdata.Migrations
 
                     b.HasIndex("NacinUplateID");
 
-                    b.HasIndex("RecepcioerID");
+                    b.HasIndex("OsobljeID");
 
                     b.HasIndex("UgovorID");
 
@@ -997,50 +1020,6 @@ namespace DBdata.Migrations
                     b.ToTable("AspNetUserTokens");
                 });
 
-            modelBuilder.Entity("DBdata.EntityModels.Kuharica", b =>
-                {
-                    b.HasBaseType("DBdata.EntityModels.Osoblje");
-
-                    b.Property<string>("KorisnikID")
-                        .HasColumnType("nvarchar(450)");
-
-                    b.HasIndex("KorisnikID")
-                        .IsUnique()
-                        .HasFilter("[KorisnikID] IS NOT NULL");
-
-                    b.HasDiscriminator().HasValue("Kuharica");
-                });
-
-            modelBuilder.Entity("DBdata.EntityModels.Recepcioer", b =>
-                {
-                    b.HasBaseType("DBdata.EntityModels.Osoblje");
-
-                    b.Property<string>("KorisnikID")
-                        .HasColumnName("Recepcioer_KorisnikID")
-                        .HasColumnType("nvarchar(450)");
-
-                    b.HasIndex("KorisnikID")
-                        .IsUnique()
-                        .HasFilter("[Recepcioer_KorisnikID] IS NOT NULL");
-
-                    b.HasDiscriminator().HasValue("Recepcioer");
-                });
-
-            modelBuilder.Entity("DBdata.EntityModels.Referent", b =>
-                {
-                    b.HasBaseType("DBdata.EntityModels.Osoblje");
-
-                    b.Property<string>("KorisnikID")
-                        .HasColumnName("Referent_KorisnikID")
-                        .HasColumnType("nvarchar(450)");
-
-                    b.HasIndex("KorisnikID")
-                        .IsUnique()
-                        .HasFilter("[Referent_KorisnikID] IS NOT NULL");
-
-                    b.HasDiscriminator().HasValue("Referent");
-                });
-
             modelBuilder.Entity("DBdata.EntityModels.Admin", b =>
                 {
                     b.HasOne("DBdata.EntityModels.Korisnik", "Korisnik")
@@ -1056,9 +1035,9 @@ namespace DBdata.Migrations
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
-                    b.HasOne("DBdata.EntityModels.Kuharica", "Kuharica")
+                    b.HasOne("DBdata.EntityModels.Osoblje", "Osoblje")
                         .WithMany()
-                        .HasForeignKey("KuharicaID")
+                        .HasForeignKey("OsobljeID")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
                 });
@@ -1157,24 +1136,28 @@ namespace DBdata.Migrations
 
             modelBuilder.Entity("DBdata.EntityModels.Obavijest", b =>
                 {
-                    b.HasOne("DBdata.EntityModels.Recepcioer", "Recepcioer")
+                    b.HasOne("DBdata.EntityModels.Osoblje", "Osoblje")
                         .WithMany()
-                        .HasForeignKey("RecepcioerID")
+                        .HasForeignKey("OsobljeID")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
                 });
 
             modelBuilder.Entity("DBdata.EntityModels.Obrok", b =>
                 {
-                    b.HasOne("DBdata.EntityModels.Kuharica", "Kuharica")
+                    b.HasOne("DBdata.EntityModels.Osoblje", "Osoblje")
                         .WithMany()
-                        .HasForeignKey("KuharicaID")
+                        .HasForeignKey("OsobljeID")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
                 });
 
             modelBuilder.Entity("DBdata.EntityModels.Osoblje", b =>
                 {
+                    b.HasOne("DBdata.EntityModels.Korisnik", "Korisnik")
+                        .WithOne("Osoblje")
+                        .HasForeignKey("DBdata.EntityModels.Osoblje", "KorisnikID");
+
                     b.HasOne("DBdata.EntityModels.Lokacija", "Lokacija")
                         .WithMany()
                         .HasForeignKey("LokacijaID")
@@ -1184,6 +1167,12 @@ namespace DBdata.Migrations
                     b.HasOne("DBdata.EntityModels.Pol", "Pol")
                         .WithMany()
                         .HasForeignKey("PolID")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.HasOne("DBdata.EntityModels.Rola", "Rola")
+                        .WithMany()
+                        .HasForeignKey("RolaID")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
                 });
@@ -1283,9 +1272,9 @@ namespace DBdata.Migrations
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
-                    b.HasOne("DBdata.EntityModels.Recepcioer", "Recepcioer")
+                    b.HasOne("DBdata.EntityModels.Osoblje", "Osoblje")
                         .WithMany()
-                        .HasForeignKey("RecepcioerID")
+                        .HasForeignKey("OsobljeID")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
@@ -1375,27 +1364,6 @@ namespace DBdata.Migrations
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
-                });
-
-            modelBuilder.Entity("DBdata.EntityModels.Kuharica", b =>
-                {
-                    b.HasOne("DBdata.EntityModels.Korisnik", "Korisnik")
-                        .WithOne("Kuharica")
-                        .HasForeignKey("DBdata.EntityModels.Kuharica", "KorisnikID");
-                });
-
-            modelBuilder.Entity("DBdata.EntityModels.Recepcioer", b =>
-                {
-                    b.HasOne("DBdata.EntityModels.Korisnik", "Korisnik")
-                        .WithOne("Recepcioer")
-                        .HasForeignKey("DBdata.EntityModels.Recepcioer", "KorisnikID");
-                });
-
-            modelBuilder.Entity("DBdata.EntityModels.Referent", b =>
-                {
-                    b.HasOne("DBdata.EntityModels.Korisnik", "Korisnik")
-                        .WithOne("Referent")
-                        .HasForeignKey("DBdata.EntityModels.Referent", "KorisnikID");
                 });
 #pragma warning restore 612, 618
         }

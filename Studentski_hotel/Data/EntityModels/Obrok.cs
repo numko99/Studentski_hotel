@@ -10,7 +10,7 @@ namespace DBdata.EntityModels
         public string Datum { get; set; }
         public float Iznos { get; set; }
         public string Detalji { get; set; }
-        public Kuharica Kuharica { get; set; }
-        public int KuharicaID { get; set; }
+        public Osoblje Osoblje { get; set; }
+        public int OsobljeID { get; set; }
     }
 }

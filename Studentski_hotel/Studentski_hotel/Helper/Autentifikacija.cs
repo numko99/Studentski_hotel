@@ -25,9 +25,8 @@ namespace Studentski_hotel.Helper
             string userId = userManager.GetUserId(httpContext.User);
 
             Korisnik k = db.Korisniks.Where(s => s.Id == userId)
-                .Include(s => s.Recepcioer)
+                .Include(s => s.Osoblje)
                 .Include(s => s.Student)
-                .Include(s => s.Referent)
                 .Include(s => s.Admin)
                 .SingleOrDefault();
 

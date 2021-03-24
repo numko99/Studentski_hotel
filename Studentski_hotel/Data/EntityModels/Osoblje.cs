@@ -17,5 +17,9 @@ namespace DBdata.EntityModels
         public int LokacijaID { get; set; }
         public Pol Pol { get; set; }
         public int PolID { get; set; }
+        public Rola Rola { get; set; }
+        public int RolaID { get; set; }
+        public Korisnik Korisnik { get; set; }
+        public string KorisnikID { get; set; }
     }
 }

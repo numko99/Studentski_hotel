@@ -10,8 +10,8 @@ namespace DBdata.EntityModels
         public string Naslov { get; set; }
         public string Text { get; set; }
         public string DatumVrijeme { get; set; }
-        public Recepcioer Recepcioer { get; set; }
-        public int RecepcioerID { get; set; }
+        public Osoblje Osoblje { get; set; }
+        public int OsobljeID { get; set; }
 
     }
 }

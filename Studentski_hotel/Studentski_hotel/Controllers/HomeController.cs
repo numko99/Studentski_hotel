@@ -28,33 +28,36 @@ namespace Studentski_hotel.Controllers
             _signInManager = signInManager;
             applicationdbcontext = _applicationdbcontext;
         }
-
+        
         public async Task<IActionResult> Index()
         {
-            var user =await _userManager.GetUserAsync(User);
+            var user = await _userManager.GetUserAsync(User);
             if (user != null)
             {
-                var referent = applicationdbcontext.Referents.Where(a => a.KorisnikID == user.Id).FirstOrDefault();
-                if (referent != null)
+                var admin = applicationdbcontext.Admins.Where(a => a.KorisnikID == user.Id).FirstOrDefault();
+                if (admin != null)
                 {
-                    return Redirect(url: "/Referent/PrijavePocetna");
-                }
-                var recepcioner = applicationdbcontext.Recepcioners.Where(a => a.KorisnikID == user.Id).FirstOrDefault();
-                if (recepcioner != null)
-                {
-                    return Redirect(url: "/Recepcija/RecepcionerPocetna");
+                    return Redirect(url: "/Admin/Prikaz");
                 }
                 var student = applicationdbcontext.Students.Where(a => a.KorisnikID == user.Id).FirstOrDefault();
                 if (student != null)
                 {
                     return Redirect(url: "/Student/StudentPocetna");
                 }
-                var admin = applicationdbcontext.Admins.Where(a => a.KorisnikID == user.Id).FirstOrDefault();
-                if (admin != null)
+                var osoblje = applicationdbcontext.Osobljes.Where(a => a.KorisnikID == user.Id).FirstOrDefault();
+                if (osoblje.RolaID == 1)
                 {
-                    return Redirect(url: "/Admin/Prikaz");
+                    return Redirect(url: "/Recepcija/RecepcionerPocetna");
                 }
-            }  
+                if (osoblje.RolaID == 2)
+                {
+                    return Redirect(url: "/Referent/PrijavePocetna");
+                }
+              
+               
+            }
+
+
             return View();
         }
 

@@ -69,11 +69,11 @@ namespace Studentski_hotel.Helper
             }
 
             //nastavnici mogu pristupiti 
-            if (_dozvoljenoRecepcioneru && k.Recepcioer != null)
+            if (_dozvoljenoRecepcioneru && k.Osoblje != null && k.Osoblje.RolaID==1)
             {
                 return;//ok - ima pravo pristupa
             }
-            if (_dozvoljenoReferentu && k.Referent != null)
+            if (_dozvoljenoReferentu && k.Osoblje != null && k.Osoblje.RolaID==2)
             {
                 return;//ok - ima pravo pristupa
             }

@@ -13,6 +13,8 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using DBdata.EntityModels;
+using Studentski_hotel.Interface;
+using Studentski_hotel.Services;
 
 namespace Studentski_hotel
 {
@@ -35,6 +37,7 @@ namespace Studentski_hotel
                 .AddEntityFrameworkStores<ApplicationDbContext>();
             services.AddControllersWithViews();
             services.AddRazorPages();
+            services.AddTransient<IKonkursService, KonkursService>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
