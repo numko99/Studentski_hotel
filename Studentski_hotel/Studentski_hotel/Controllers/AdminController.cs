@@ -86,7 +86,8 @@ namespace Studentski_hotel.Controllers
                     email = a.Korisnik.Email,
                     KorisnikID = a.KorisnikID,
                     LokacijaID = a.LokacijaID,
-                    TipKorisnika = 1
+                    TipKorisnika = 1,
+                    
 
                 }).FirstOrDefault();
                
@@ -99,6 +100,7 @@ namespace Studentski_hotel.Controllers
             osoblje.Kanton = kantoni;
             osoblje.Pol = pol;
             osoblje.MjestoStanovanja = opstine;
+            
             return View(osoblje);
         }
 
@@ -126,6 +128,8 @@ namespace Studentski_hotel.Controllers
                 lokacija.KantonID = admir.KantonID;
                 dbContext.Add(lokacija);
                 dbContext.SaveChanges();
+
+                //slanje maila zaposleniku
             }
             else
             {
@@ -158,34 +162,6 @@ namespace Studentski_hotel.Controllers
 
             //dbContext.Add(recepcioer);
             dbContext.SaveChanges();
-
-            //else if (admir.TipKorisnika == 2)
-            //{
-            //    Referent recepcioer;
-            //    if (admir.ID == 0)
-            //    {
-            //        recepcioer = new Referent();
-            //        recepcioer.LokacijaID = lokacija.ID;
-            //        dbContext.Add(recepcioer);
-
-            //    }
-            //    else
-            //    {
-            //        recepcioer = dbContext.Referents.Where(a => a.ID == admir.ID).FirstOrDefault();
-            //        recepcioer.LokacijaID = admir.LokacijaID;
-            //    }
-            //    recepcioer.Korisnik = korisnik;
-            //    recepcioer.Ime = admir.Ime;
-            //    recepcioer.Prezime = admir.Prezime;
-            //    recepcioer.PolID = admir.PolID;
-            //    recepcioer.DatumRodjenja = admir.DatumRodjenja.ToString("dd/MM/yyyy");
-
-
-            //    //dbContext.Add(recepcioer);
-            //    dbContext.SaveChanges();
-            //}
-
-
 
             return Redirect(url: "/Admin/Prikaz");
         }
