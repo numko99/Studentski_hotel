@@ -1,0 +1,44 @@
+﻿<style>
+    .klasa {
+        border: 1px solid #d6f5e6;
+        border-radius: 5px;
+        margin: 10px;
+        width: 20%;
+        text-align: center;
+        background-color: #d6f5e6;
+        cursor: pointer;
+        
+    }
+
+</style>
+
+<div class="d-flex flex-row bd-highlight mb-lg-5">
+    <div class="p-2 bd-highlight klasa" onclick="PrikazSoba()">Sobe</div>
+    <div class="p-2 bd-highligh klasa"  onclick="PrikazStudenata()">Studenti</div>
+    <div class="p-2 bd-highlight klasa" onclick="PrikazZahtjeva()">Zahtjevi</div>
+</div>
+<div id="AjaxDiv">
+
+</div>
+<script src="~/lib/jquery/dist/jquery.js"></script>
+<script>
+    var PrikazSoba=()=> {
+       
+        $.get("/Recepcija/PrikazSoba"/*, { tip: indeks }*/, function (data) {
+            $("#AjaxDiv").html(data);
+        })
+    }
+    PrikazSoba();
+    var PrikazStudenata = () => {
+
+        $.get("/Recepcija/PrikazStudenata"/*, { tip: indeks }*/, function (data) {
+            $("#AjaxDiv").html(data);
+        })
+    }
+    var PrikazZahtjeva = () => {
+
+        $.get("/Recepcija/PrikazZahtjeva"/*, { tip: indeks }*/, function (data) {
+            $("#AjaxDiv").html(data);
+        })
+    }
+</script>

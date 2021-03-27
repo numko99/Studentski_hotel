@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using DBdata.EntityModels;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using Studentski_hotel.Data;
 using Studentski_hotel.Helper;
 using Studentski_hotel.Models.Recepcija;
@@ -118,7 +119,7 @@ namespace Studentski_hotel.Controllers
         {
            
 
-            var ob = dbContext.Obavijests.Find(obavijestID);
+            var ob=dbContext.Obavijests.Include(a=>a.Osoblje).Where(a=>a.ID==obavijestID).FirstOrDefault();
            
             PregledObavijesti po = new PregledObavijesti();
             po.obavijestID = ob.ID;
@@ -152,6 +153,27 @@ namespace Studentski_hotel.Controllers
 
         //    return PartialView(all);
         //}
+        public IActionResult Pregled()
+        {
+            
+            return View();
+        }
+        
+        public IActionResult PrikazSoba()
+        {
 
+            return View();
+        }
+
+        public IActionResult PrikazStudenata()
+        {
+
+            return View();
+        }
+        public IActionResult PrikazZahtjeva()
+        {
+
+            return View();
+        }
     }
 }
