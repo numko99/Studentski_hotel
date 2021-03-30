@@ -23,5 +23,9 @@ function ZatvoriDiv() {
 
         document.getElementById("ajaxTabela").style.display = "none";
     }
+    function Zatvori() {
 
+        document.getElementById("AjaxDiva").style.display = "none";
+
+    }
 }

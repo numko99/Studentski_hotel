@@ -1,0 +1,43 @@
+﻿@{ 
+    Layout = null;
+}
+
+@model Studentski_hotel.Models.Recepcija.DodajUSobuVM
+<style>
+    #form{
+        width:50%;
+        margin:auto;
+        padding:20px;
+    }
+    .klasa {
+        
+        margin: 5px;
+        width: 50%;
+     
+    }
+</style>
+<div>
+    <form id="form" method="Post" asp-action="SnimiUgovor">
+        <div class="form-group">
+            <label>Student : </label><br />
+            <select asp-for="StudentID" asp-items="@Model.Studenti" class="form-control"></select>
+        </div>
+        <div class="form-group">
+            <label>Soba : </label><br />
+            <select asp-for="SobaID" asp-items="@Model.Soba" class="form-control"></select>
+
+        </div>
+        <div class="form-group">
+            <label>Broj kartice : </label>
+            <select asp-for="BrojKarticeID" asp-items="@Model.BrojKartice" class="form-control"></select>
+        </div>
+        <div class="d-flex justify-content-start">
+            <input class="btn-success klasa" type="submit" value="Snimi" />
+            <input class="btn-danger klasa" type="button" value="Prekini" onclick="Zatvori()" />
+
+        </div>
+    </form>
+</div>
+<script>
+   
+</script>

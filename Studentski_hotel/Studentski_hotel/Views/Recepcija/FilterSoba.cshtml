@@ -1,0 +1,35 @@
+﻿@{
+    Layout = null;
+}
+
+
+@*<h3>adsdas</h3>*@
+<form class="form-inline">
+    <div class="form-group mx-sm-3 mb-2">
+        <input type="search" oninput="PrikazSoba()" placeholder="Pretrazi sobe" class="form-control" id="SobaID" />
+    </div>
+    <div class="form-group mx-sm-3 mb-2">
+        <select class="form-control" id="KrevetID" onchange="PrikazSoba()">
+            <option value="0">Sve sobe</option>
+            <option value="1">Jednokrevetna</option>
+            <option value="2">Dvokrevetna</option>
+            <option value="3">Trokrevetna</option>
+        </select>
+    </div>
+</form>
+
+
+<div id="Ajax">
+
+</div>
+
+<script>
+    var PrikazSoba = () => {
+        var soba = document.getElementById("SobaID").value;
+        var krevet = document.getElementById("KrevetID").value;
+        $.get("/Recepcija/PrikazSoba", { Soba: soba,Krevet:krevet}, function (data) {
+            $("#Ajax").html(data);
+        })
+    }
+    PrikazSoba();
+</script>
