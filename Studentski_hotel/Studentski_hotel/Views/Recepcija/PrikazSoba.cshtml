@@ -2,13 +2,15 @@
     Layout = null;
 }
 @model Studentski_hotel.Models.Recepcija.PregledSobaVM
-<table class="table">
+<table class="table table-striped">
     <thead>
         <tr>
             <th>Soba</th>
             <th>Broj kreveta</th>
             <th>Studenti</th>
+            <th></th>
         </tr>
+    </thead>
         @foreach (var item in Model.Sobe)
         {
     <tr>
@@ -28,5 +30,5 @@
     </tr>
         }
 
-    </thead>
+
 </table>

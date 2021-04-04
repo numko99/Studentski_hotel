@@ -206,7 +206,7 @@ namespace Studentski_hotel.Controllers
                 Broj_Sobe = a.BrojSobe,
                 Sprat = a.Sprat,
                 Napomena = a.Napomena,
-                ImaBalkon = a.ImaBalkon? "DA" : "NE",
+                ImaBalkon = a.ImaBalkon ? "DA" : "NE",
                 bROJ_Kreveta = a.BrojKreveta.ToString()
 
 
@@ -220,7 +220,7 @@ namespace Studentski_hotel.Controllers
             model.Popunjena = model.bROJ_Kreveta == studenti.Count.ToString();
             return View(model);
         }
-        public IActionResult DodajUsobu(int SobaID)
+        public IActionResult DodajUsobu(int SobaID, int StudentID)
         {
             var Primljenistudenti = dbContext.Ugovors.Select(a => a.StudentID).ToList();
             var studenti = dbContext.Students.Where(a => !Primljenistudenti.Contains(a.ID)).Select(a => new SelectListItem
@@ -228,51 +228,119 @@ namespace Studentski_hotel.Controllers
                 Value = a.ID.ToString(),
                 Text = a.Ime + " " + a.Prezime
             }).ToList();
-            var sobe = dbContext.Sobas.Select(a => new SelectListItem
+
+            var Sobe = dbContext.Sobas.ToList();
+            var Slobodnesobe = new List<SelectListItem>();
+            foreach (var item in Sobe)
             {
-                Value = a.ID.ToString(),
-                Text = a.BrojSobe
-            }).ToList();
-            var ZauzeteKartice = dbContext.Ugovors.Select(a => a.KarticaID).ToList();
-            var kartice = dbContext.Karticas.Where(a => !ZauzeteKartice.Contains(a.ID)).Select(a => new SelectListItem
+                var brojac = dbContext.Ugovors.Where(a => a.SobaID == item.ID).Count();
+
+                if (item.BrojKreveta > brojac)
+                {
+                    Slobodnesobe.Add(new SelectListItem { Value = item.ID.ToString(), Text = item.BrojSobe });
+                }
+
+            }
+                var ZauzeteKartice = dbContext.Ugovors.Select(a => a.KarticaID).ToList();
+                var kartice = dbContext.Karticas.Where(a => !ZauzeteKartice.Contains(a.ID)).Select(a => new SelectListItem
+                {
+                    Value = a.ID.ToString(),
+                    Text = a.BrojKartice
+                }).ToList();
+
+                var model = new DodajUSobuVM();
+                model.Studenti = studenti;
+                model.StudentID = StudentID;
+                model.Soba = Slobodnesobe;
+                model.SobaID = SobaID;
+                model.BrojKartice = kartice;
+                return View(model);
+            }
+            public async Task<IActionResult> SnimiUgovor(DodajUSobuVM admir)
             {
-                Value = a.ID.ToString(),
-                Text = a.BrojKartice
-            }).ToList();
+                var user = await _userManager.GetUserAsync(User);
+                var osoblje = dbContext.Osobljes.Where(a => a.KorisnikID == user.Id).FirstOrDefault();
 
-            var model = new DodajUSobuVM();
-            model.Studenti = studenti;
-            model.Soba = sobe;
-            model.SobaID = SobaID;
-            model.BrojKartice = kartice;
-            return View(model);
-        }
-        public async Task<IActionResult> SnimiUgovor(DodajUSobuVM admir)
-        {
-            var user = await _userManager.GetUserAsync(User);
-            var osoblje = dbContext.Osobljes.Where(a => a.KorisnikID == user.Id).FirstOrDefault();
-
-            var ugovor = new Ugovor
+                var ugovor = new Ugovor
+                {
+                    SobaID = admir.SobaID,
+                    StudentID = admir.StudentID,
+                    KarticaID = admir.BrojKarticeID,
+                    DodanUgovorOsobljeID = osoblje.ID
+                };
+                dbContext.Add(ugovor);
+                var Primljeni = dbContext.Students.Find(admir.StudentID);
+                Primljeni.Uselio = true;
+                dbContext.SaveChanges();
+                return Redirect("/Recepcija/DetaljiPrikazSoba?SobaID=" + admir.SobaID);
+            }
+            public IActionResult FilterStudenata()
             {
-                SobaID = admir.SobaID,
-                StudentID = admir.StudentID,
-                KarticaID=admir.BrojKarticeID,
-                DodanUgovorOsobljeID=osoblje.ID
-            };
-            dbContext.Add(ugovor);
-            dbContext.SaveChanges();
-            return Redirect("/Recepcija/DetaljiPrikazSoba?SobaID=" + admir.SobaID);
-        }
-        public IActionResult PrikazStudenata()
-        {
+                return View();
+            }
+            public IActionResult PrikazStudenata(string pretraga, string Tip)
+            {
+                var tip = Tip == "0" ? true : false;
+                var prijave = dbContext.Students.Where(a => (pretraga == null || (a.Ime + ' ' + a.Prezime).ToLower().StartsWith(pretraga.ToLower())
+               || (a.Prezime + ' ' + a.Ime).ToLower().StartsWith(pretraga.ToLower())) && a.Uselio == tip).Select(b => new PrikazStudenataVM.Row
+               {
+                   ID = b.ID,
+                   Ime = b.Ime,
+                   Prezime = b.Prezime,
+                   Uselio = b.Uselio,
+                   Soba = dbContext.Ugovors.Where(c => c.StudentID == b.ID).Select(a => a.Soba.BrojSobe).FirstOrDefault(),
+                   BrojKartice = dbContext.Ugovors.Where(c => c.StudentID == b.ID).Select(a => a.Kartica.BrojKartice).FirstOrDefault(),
 
-            return View();
-        }
-        public IActionResult PrikazZahtjeva()
-        {
+               }).ToList();
+                var model = new PrikazStudenataVM();
+                model.Studenti = prijave;
 
-            return View();
-        }
+                return View(model);
+            }
+            public IActionResult DetaljiPrikazStudenata(int StudentID)
+            {
+                var model = dbContext.Students.Where(a => StudentID == a.ID).Select(admir => new DetaljiPrikazStudenataVM
+                {
+                    ID = admir.ID,
+                    Ime = admir.Ime,
+                    Prezime = admir.Prezime,
+                    ImeOca = admir.ImeOca,
+                    MjestoRodjenjaID = admir.MjestoRodjenjaID,
+                    MjestoRodjenja = admir.MjestoRodjenja.Naziv,
+                    ZanimanjeRoditelja = admir.ZanimanjeRoditelja,
+                    PolID = admir.PolID,
+                    Pol = admir.Pol.Naziv,
+                    JMBG = admir.JMBG,
+                    LicnaKarta = admir.LicnaKarta,
+                    DatumRodjenja = admir.DatumRodjenja.ToString(),
+                    Mobitel = admir.Mobitel,
+                    Email = admir.Email,
 
+                    Adresa = admir.Lokacija.Adresa,
+                    MjestoStanovanjaID = admir.Lokacija.MjestoStanovanjaID,
+                    MjestoStanovanja = admir.Lokacija.MjestoStanovanja.Naziv,
+                    KantonID = admir.Lokacija.KantonID,
+                    Kanton = admir.Lokacija.Kanton.Naziv,
+
+                    FakultetID = admir.FakultetID,
+                    Fakultet = admir.Fakultet.Naziv,
+                    TipKandidataID = admir.TipKandidataID,
+                    TipKandidata = admir.TipKandidata.Naziv,
+                    BrojIndeksa = admir.BrojIndeksa,
+                    CiklusStudijaID = admir.CiklusStudijaID,
+                    CiklusStudija = admir.CiklusStudija.Naziv,
+                    GodinaStudijaID = admir.GodinaStudijaID,
+                    GodinaStudija = admir.GodinaStudija.Naziv,
+
+
+                }).Single();
+                return View(model);
+            }
+            public IActionResult PrikazZahtjeva()
+            {
+
+                return View();
+            }
+
+        }
     }
-}

@@ -1,0 +1,34 @@
+﻿@{
+    Layout = null;
+}
+
+
+@*<h3>adsdas</h3>*@
+<form class="form-inline">
+    <div class="form-group mx-sm-3 mb-2">
+        <input type="search" oninput="PrikazStudenata()" placeholder="Pretrazi studente" class="form-control" id="StudentID" />
+    </div>
+    <div class="form-group mx-sm-3 mb-2">
+            <select class="form-control" id="TipID" onchange="PrikazStudenata()">
+                <option value="0">Stanari</option>
+                <option value="1">Primljeni</option>
+                @*<option value="2">Dvokrevetna</option>
+                <option value="3">Trokrevetna</option>*@
+            </select>
+        </div>
+</form>
+
+<div id="Ajax">
+
+</div>
+
+<script>
+    var PrikazStudenata = () => {
+        var studenti = document.getElementById("StudentID").value;
+        var tip = document.getElementById("TipID").value;
+        $.get("/Recepcija/PrikazStudenata", { pretraga:studenti,Tip:tip}, function (data) {
+            $("#Ajax").html(data);
+        })
+    }
+    PrikazStudenata();
+</script>

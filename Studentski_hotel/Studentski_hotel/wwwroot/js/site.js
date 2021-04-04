@@ -29,3 +29,22 @@ function ZatvoriDiv() {
 
     }
 }
+
+var FilterSoba = () => {
+
+    $.get("/Recepcija/FilterSoba"/*, { tip: indeks }*/, function (data) {
+        $("#AjaxDiv").html(data);
+    })
+}
+var FilterStudenata = () => {
+
+    $.get("/Recepcija/FilterStudenata"/*, { tip: indeks }*/, function (data) {
+        $("#AjaxDiv").html(data);
+    })
+}
+var PrikazZahtjeva = () => {
+
+    $.get("/Recepcija/PrikazZahtjeva"/*, { tip: indeks }*/, function (data) {
+        $("#AjaxDiv").html(data);
+    })
+}

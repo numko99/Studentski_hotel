@@ -15,7 +15,7 @@
 
 <div class="d-flex flex-row bd-highlight mb-lg-5">
     <button class="p-2 bd-highlight btn btn-success klasa" onclick="FilterSoba()">Sobe</button>
-    <button class="p-2 bd-highligh btn btn-success klasa"  onclick="PrikazStudenata()">Studenti</button>
+    <button class="p-2 bd-highligh btn btn-success klasa"  onclick="FilterStudenata()">Studenti</button>
     <button class="p-2 bd-highlight btn btn-success klasa" onclick="PrikazZahtjeva()">Zahtjevi</button>
 </div>
 <div id="AjaxDiv">
@@ -23,23 +23,5 @@
 </div>
 <script src="~/lib/jquery/dist/jquery.js"></script>
 <script>
-    var FilterSoba=()=> {
-       
-        $.get("/Recepcija/FilterSoba"/*, { tip: indeks }*/, function (data) {
-            $("#AjaxDiv").html(data);
-        })
-    }
-    FilterSoba();
-    var PrikazStudenata = () => {
-
-        $.get("/Recepcija/PrikazStudenata"/*, { tip: indeks }*/, function (data) {
-            $("#AjaxDiv").html(data);
-        })
-    }
-    var PrikazZahtjeva = () => {
-
-        $.get("/Recepcija/PrikazZahtjeva"/*, { tip: indeks }*/, function (data) {
-            $("#AjaxDiv").html(data);
-        })
-    }
+  
 </script>
