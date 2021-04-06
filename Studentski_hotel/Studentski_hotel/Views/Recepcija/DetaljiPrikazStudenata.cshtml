@@ -161,7 +161,16 @@
     </fieldset>
 
     <div>
-        <input type="button" class="btn btn-danger" onclick="DodajStudentaSoba()" value="Pregledaj"  />
+        @if (Model.Uselio)
+        {
+            @*<input type="button" class="btn btn-success" onclick="DodajStudentaSoba()" value="Uredi" />*@
+            <input type="button" class="btn btn-danger" onclick="window.location='/Recepcija/IseliStudenta?StudentID=@Model.ID'" value="Iseli" />
+        }
+        else
+        {
+
+            <input type="button" class="btn btn-success" onclick="DodajStudentaSoba()" value="Useli" />
+        }
     </div>
 </form>
 <div id="parentDisable" onclick="Zatvori()"></div>

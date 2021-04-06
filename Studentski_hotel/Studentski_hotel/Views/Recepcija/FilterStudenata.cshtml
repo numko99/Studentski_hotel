@@ -1,32 +1,41 @@
-﻿@{
-    Layout = null;
-}
+﻿<style>
+    .klasa {
+      
+        margin: 10px;
+        width: 20%;
+   
+    }
+</style>
 
+<div class="d-flex flex-row bd-highlight mb-lg-5">
+    <button class="p-2 bd-highlight btn btn-success klasa" onclick="window.location='/Recepcija/FilterSoba'">Sobe</button>
+    <button class="p-2 bd-highligh btn btn-success klasa" onclick="window.location='/Recepcija/FilterStudenata'">Studenti</button>
+    <button class="p-2 bd-highligh btn btn-success klasa" onclick="window.location='/Recepcija/PrikazZahtjeva'">Zahtjevi</button>
+</div>
 
-@*<h3>adsdas</h3>*@
 <form class="form-inline">
     <div class="form-group mx-sm-3 mb-2">
         <input type="search" oninput="PrikazStudenata()" placeholder="Pretrazi studente" class="form-control" id="StudentID" />
     </div>
     <div class="form-group mx-sm-3 mb-2">
-            <select class="form-control" id="TipID" onchange="PrikazStudenata()">
-                <option value="0">Stanari</option>
-                <option value="1">Primljeni</option>
-                @*<option value="2">Dvokrevetna</option>
-                <option value="3">Trokrevetna</option>*@
-            </select>
-        </div>
+        <select class="form-control" id="TipID" onchange="PrikazStudenata()">
+            <option value="0">Stanari</option>
+            <option value="1">Primljeni</option>
+           
+        </select>
+    </div>
 </form>
 
 <div id="Ajax">
 
 </div>
+<script src="/lib/jquery/dist/jquery.js"></script>
 
 <script>
     var PrikazStudenata = () => {
         var studenti = document.getElementById("StudentID").value;
         var tip = document.getElementById("TipID").value;
-        $.get("/Recepcija/PrikazStudenata", { pretraga:studenti,Tip:tip}, function (data) {
+        $.get("/Recepcija/PrikazStudenata", { pretraga: studenti, Tip: tip }, function (data) {
             $("#Ajax").html(data);
         })
     }

@@ -1,9 +1,18 @@
-﻿@{
-    Layout = null;
-}
+﻿
+<style>
+    .klasa {
+     
+        margin: 10px;
+        width: 20%;
+      
+    }
+</style>
 
-
-@*<h3>adsdas</h3>*@
+<div class="d-flex flex-row bd-highlight mb-lg-5">
+    <button class="p-2 bd-highlight btn btn-success klasa" onclick="window.location='/Recepcija/FilterSoba'">Sobe</button>
+    <button class="p-2 bd-highligh btn btn-success klasa" onclick="window.location='/Recepcija/FilterStudenata'">Studenti</button>
+    <button class="p-2 bd-highligh btn btn-success klasa" onclick="window.location='/Recepcija/PrikazZahtjeva'">Zahtjevi</button>
+</div>
 <form class="form-inline">
     <div class="form-group mx-sm-3 mb-2">
         <input type="search" oninput="PrikazSoba()" placeholder="Pretrazi sobe" class="form-control" id="SobaID" />
@@ -22,12 +31,12 @@
 <div id="Ajax">
 
 </div>
-
+<script src="/lib/jquery/dist/jquery.js"></script>
 <script>
     var PrikazSoba = () => {
         var soba = document.getElementById("SobaID").value;
         var krevet = document.getElementById("KrevetID").value;
-        $.get("/Recepcija/PrikazSoba", { Soba: soba,Krevet:krevet}, function (data) {
+        $.get("/Recepcija/PrikazSoba", { Soba: soba, Krevet: krevet }, function (data) {
             $("#Ajax").html(data);
         })
     }

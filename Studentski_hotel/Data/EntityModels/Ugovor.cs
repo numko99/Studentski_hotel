@@ -15,7 +15,8 @@ namespace DBdata.EntityModels
         public int KarticaID { get; set; }
         public Osoblje DodanUgovorOsoblje { get; set; }
         public int DodanUgovorOsobljeID { get; set; }
-
+        public string DatumUseljenja { get; set; }
+        public string DatumIseljenja { get; set; }
 
     }
 }
