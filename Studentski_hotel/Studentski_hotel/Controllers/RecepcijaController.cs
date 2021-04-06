@@ -393,8 +393,17 @@ namespace Studentski_hotel.Controllers
 
         public IActionResult PrikazZahtjeva()
         {
-
-            return View();
+            var model = dbContext.Zahtjevs.Select(a => new PrikazZahtjevaVM.Row
+            {
+                ID = a.ID,
+                ImePrezime = a.Ugovor.Student.Ime + " " + a.Ugovor.Student.Prezime,
+                Zahtjev = a.VrstaZahtjeva.Naziv,
+                Datum = a.Datum,
+                Soba=a.Ugovor.Soba.BrojSobe
+            }).ToList();
+            var Model = new PrikazZahtjevaVM();
+            Model.Zahtjevi = model;
+            return View(Model);
         }
 
     }

@@ -4,10 +4,29 @@
         width: 20%;
     }
 </style>
+@model Studentski_hotel.Models.Recepcija.PrikazZahtjevaVM
 
 <div class="d-flex flex-row bd-highlight mb-lg-5">
     <button class="p-2 bd-highlight btn btn-success klasa" onclick="window.location='/Recepcija/FilterSoba'">Sobe</button>
     <button class="p-2 bd-highligh btn btn-success klasa" onclick="window.location='/Recepcija/FilterStudenata'">Studenti</button>
     <button class="p-2 bd-highligh btn btn-success klasa" onclick="window.location='/Recepcija/PrikazZahtjeva'">Zahtjevi</button>
 </div>
-<h1>ZZAHTJEVI</h1>
+<table class="table table-striped">
+    <tr>
+        <th>Ime i prezime</th>
+        <th>Zahtjev</th>
+        <th>Datum</th>
+        <th>Broj sobe</th>
+        <th></th>
+    </tr>
+   @foreach (var item in Model.Zahtjevi)
+   {
+       <tr>
+           <td>@item.ImePrezime</td>
+           <td>@item.Zahtjev</td>
+           <td>@item.Datum</td>
+           <td>@item.Soba</td>
+           <td><button class="btn btn-success">Pregled</button></td>
+       </tr>
+   }
+</table>
