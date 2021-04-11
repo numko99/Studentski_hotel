@@ -1,17 +1,12 @@
 ﻿<style>
     .klasa {
-      
         margin: 10px;
         width: 20%;
-   
     }
 </style>
 
-<div class="d-flex flex-row bd-highlight mb-lg-5">
-    <button class="p-2 bd-highlight btn btn-success klasa" onclick="window.location='/Recepcija/FilterSoba'">Sobe</button>
-    <button class="p-2 bd-highligh btn btn-success klasa" onclick="window.location='/Recepcija/FilterStudenata'">Studenti</button>
-    <button class="p-2 bd-highligh btn btn-success klasa" onclick="window.location='/Recepcija/PrikazZahtjeva'">Zahtjevi</button>
-</div>
+<partial name="_ButtonsPartial" />
+
 
 <form class="form-inline">
     <div class="form-group mx-sm-3 mb-2">
@@ -21,7 +16,7 @@
         <select class="form-control" id="TipID" onchange="PrikazStudenata()">
             <option value="0">Stanari</option>
             <option value="1">Primljeni</option>
-           
+
         </select>
     </div>
 </form>

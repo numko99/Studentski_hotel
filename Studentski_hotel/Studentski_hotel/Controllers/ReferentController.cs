@@ -21,13 +21,16 @@ namespace Studentski_hotel.Controllers
         private SignInManager<Korisnik> _signInManager;
         private ApplicationDbContext dbContext;
         private IKonkursService konkursService;
+        private IEmailService _emailService;
 
-        public ReferentController(ApplicationDbContext dbContext, UserManager<Korisnik> userManager, SignInManager<Korisnik> signInManager, IKonkursService _konkursService)
+
+        public ReferentController(ApplicationDbContext dbContext, UserManager<Korisnik> userManager, SignInManager<Korisnik> signInManager, IKonkursService _konkursService, IEmailService emailService)
         {
             this.dbContext = dbContext;
             _userManager = userManager;
             _signInManager = signInManager;
             konkursService = _konkursService;
+            _emailService = emailService;
         }
 
         public IActionResult Index()
@@ -173,11 +176,13 @@ namespace Studentski_hotel.Controllers
             if (rezultat.VrstaStanjaKonkursaID == 2 && konkurs.StudentID == null)
             {
                 konkursService.DodajStudenta(admir);//Generise u bazi studenta na osnovu konkursa
+                PosaljiMail(admir.Email);
+
 
             }
             return Redirect(url: "/Referent/PrijavePocetna");
         }
-        public IActionResult SnimiPrimljeneStudente(int minBodova, int BrojStudenata)
+        public IActionResult SnimiPrimljeneStudenteAsync(int minBodova, int BrojStudenata)
         {
 
             var studenti = dbContext.Konkurs.Where(a => a.RezultatKonkursa.VrstaStanjaKonkursaID == 1 && a.RezultatKonkursa.BrojBodova > minBodova)
@@ -224,7 +229,8 @@ namespace Studentski_hotel.Controllers
             {
 
                 konkursService.DodajStudenta(admir);//Generise u bazi studenta na osnovu konkursa
-                brojac++;
+                PosaljiMail(admir.Email);
+                 brojac++;
                 if (brojac == BrojStudenata)
                 {
                     break;
@@ -232,7 +238,13 @@ namespace Studentski_hotel.Controllers
             }
             return Redirect(url: "/Referent/PrijavePocetna");
         }
-       
+      
+       public async void PosaljiMail(string mail)
+        {
+            await _emailService.SendEmailAsync(mail, "Studentski hotel Mostar", "<h1>Prijem u studentski dom </h1>" +
+                  $"<p>Postovani, ovim putem vas obavjestavam da ste primljeni u studentski dom </p>"
+                   );
+        }
     }
 
 

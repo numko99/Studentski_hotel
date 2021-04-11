@@ -8,6 +8,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Studentski_hotel.Data;
 using Studentski_hotel.Helper;
+using Studentski_hotel.Interface;
 using Studentski_hotel.Models.Admin;
 namespace Studentski_hotel.Controllers
 {
@@ -18,13 +19,14 @@ namespace Studentski_hotel.Controllers
         private UserManager<Korisnik> _userManager;
         private readonly SignInManager<Korisnik> _signInManager;
         private ApplicationDbContext dbContext;
+        private IEmailService _emailService;
 
-
-        public AdminController(UserManager<Korisnik> userManager, SignInManager<Korisnik> signInManager, ApplicationDbContext _dbContext)
+        public AdminController(UserManager<Korisnik> userManager, SignInManager<Korisnik> signInManager, ApplicationDbContext _dbContext, IEmailService emailService)
         {
             _userManager = userManager;
             _signInManager = signInManager;
             dbContext = _dbContext;
+            _emailService = emailService;
         }
 
         public IActionResult Index()
@@ -104,7 +106,7 @@ namespace Studentski_hotel.Controllers
             return View(osoblje);
         }
 
-        public IActionResult Snimi(DodajNastavnikaVM admir)
+        public async Task<IActionResult> SnimiAsync(DodajNastavnikaVM admir)
         {
             Korisnik korisnik;
             Lokacija lokacija;
@@ -114,9 +116,9 @@ namespace Studentski_hotel.Controllers
                 korisnik = new Korisnik();
                 korisnik.Email = admir.email;
                 korisnik.UserName = admir.email;
-                korisnik.EmailConfirmed = true;
+                //korisnik.EmailConfirmed = true;
                 korisnik.PhoneNumber = admir.mobitel;
-
+                
                 IdentityResult result = _userManager.CreateAsync(korisnik, admir.password).Result;
                 if (!result.Succeeded)
                 {
@@ -145,6 +147,10 @@ namespace Studentski_hotel.Controllers
                 osoblje.LokacijaID = lokacija.ID;
                 osoblje.RolaID = admir.TipKorisnika;
                 dbContext.Add(osoblje);
+                await _emailService.SendEmailAsync(admir.email, "Studentski hotel Mostar", "<h1>Poštovani, Vaši pristupni podaci se nalaze u ovom mailu </h1>" +
+                    $"<p>Vaši pristupni podaci su :</p>"+
+                     $"<p>E-mail : {admir.email}</p>"+
+                    $"<p>Sifra : {admir.password}</p>");
 
             }
             else

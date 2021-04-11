@@ -11,6 +11,7 @@ using Microsoft.EntityFrameworkCore;
 using Studentski_hotel.Data;
 using Studentski_hotel.Helper;
 using Studentski_hotel.Models.Recepcija;
+using cloudscribe.Pagination.Models;
 
 namespace Studentski_hotel.Controllers
 {
@@ -391,19 +392,27 @@ namespace Studentski_hotel.Controllers
             return Redirect(url: "/Recepcija/DetaljiPrikazStudenata?StudentID=" + StudentID);
         }
 
-        public IActionResult PrikazZahtjeva()
+        public  IActionResult PrikazZahtjeva(int pageNumber = 1, int pageSize = 6)
         {
+            int ExcludeRecords = (pageSize * pageNumber) - pageSize;
             var model = dbContext.Zahtjevs.Select(a => new PrikazZahtjevaVM.Row
             {
                 ID = a.ID,
                 ImePrezime = a.Ugovor.Student.Ime + " " + a.Ugovor.Student.Prezime,
                 Zahtjev = a.VrstaZahtjeva.Naziv,
                 Datum = a.Datum,
-                Soba=a.Ugovor.Soba.BrojSobe
-            }).ToList();
+                Soba = a.Ugovor.Soba.BrojSobe
+            }).Skip(ExcludeRecords).Take(pageSize);
+            int brojac = dbContext.Zahtjevs.Count();
             var Model = new PrikazZahtjevaVM();
-            Model.Zahtjevi = model;
-            return View(Model);
+            var result = new PagedResult<PrikazZahtjevaVM.Row>
+            {
+                Data = model.AsNoTracking().ToList(),
+                TotalItems = brojac,
+                PageNumber = pageNumber,
+                PageSize = pageSize
+            };
+            return View(result);
         }
 
     }
