@@ -1,0 +1,10 @@
+.PrikazZaposlenih{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-flow: row;
+}
+.PrikazZaposlenih div{
+    width: 90%;
+
+}

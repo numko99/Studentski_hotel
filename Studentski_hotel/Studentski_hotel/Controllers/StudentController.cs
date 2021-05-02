@@ -5,9 +5,13 @@ using System.Threading.Tasks;
 using DBdata.EntityModels;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Rendering;
+using Microsoft.AspNetCore.SignalR;
+using Microsoft.EntityFrameworkCore;
 using Studentski_hotel.Data;
 using Studentski_hotel.Helper;
 using Studentski_hotel.Models.Student;
+using Studentski_hotel.notHub;
 
 namespace Studentski_hotel.Controllers
 {
@@ -18,13 +22,14 @@ namespace Studentski_hotel.Controllers
         private UserManager<Korisnik> _userManager;
         private readonly SignInManager<Korisnik> _signInManager;
         private ApplicationDbContext dbContext;
+        IHubContext<NotHub> _hubContext;
 
-
-        public StudentController(UserManager<Korisnik> userManager, SignInManager<Korisnik> signInManager, ApplicationDbContext _dbContext)
+        public StudentController(UserManager<Korisnik> userManager, SignInManager<Korisnik> signInManager, ApplicationDbContext _dbContext, IHubContext<NotHub> hubContext)
         {
             _userManager = userManager;
             _signInManager = signInManager;
             dbContext = _dbContext;
+            _hubContext = hubContext;
         }
         public IActionResult Index()
         {
@@ -75,6 +80,37 @@ namespace Studentski_hotel.Controllers
 
 
             return View(po);
+        }
+        public IActionResult PosaljiZahtjev()
+        {
+            var vrste = dbContext.VrstaZahtjevas.Select(a => new SelectListItem
+            {
+                Value = a.ID.ToString(),
+                Text = a.Naziv.ToString()
+            }).ToList();
+            PosaljiZahtjevVM model = new PosaljiZahtjevVM();
+            model.VrstaZahtjeva = vrste;
+            return View(model);
+        }
+        public async Task<IActionResult> SnimiZahtjev(PosaljiZahtjevVM admir)
+        {
+            var user = await _userManager.GetUserAsync(User);
+            var ugovor = dbContext.Ugovors.Include(a=>a.Student).Include(a=>a.Soba).Where(a => a.Student.KorisnikID==user.Id).FirstOrDefault();
+            var Zahtjev = new Zahtjev()
+            {
+                Datum = DateTime.Now.ToString(),
+                VrstaZahtjevaID = admir.VrstaZahtjevaID,
+                VrstaStanjaZahtjevaID = 1,
+                Text = admir.Text,
+                UgovorID=ugovor.ID
+                
+            };
+            dbContext.Add(Zahtjev);
+            dbContext.SaveChanges();
+            var broj = dbContext.Zahtjevs.Count();
+           await _hubContext.Clients.All.SendAsync("SlanjeZahtjeva", ugovor.Student.Ime+" "+ugovor.Student.Prezime,admir.Text, DateTime.Now.ToString(),ugovor.Soba.BrojSobe,broj);
+
+            return Redirect(url: "/Student/PosaljiZahtjev");
         }
 
     }

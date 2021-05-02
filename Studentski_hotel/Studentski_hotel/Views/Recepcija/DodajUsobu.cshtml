@@ -16,10 +16,12 @@
      
     }
 </style>
+<script src="~/js/site.js"></script>
 <div>
     <form id="form" method="Post" asp-action="SnimiUgovor">
         <div class="form-group">
             <label>Student : </label><br />
+            <input asp-for="Password" id="Pass" hidden/>
             <select asp-for="StudentID" asp-items="@Model.Studenti" class="form-control"></select>
         </div>
         <div class="form-group">
@@ -39,5 +41,6 @@
     </form>
 </div>
 <script>
-   
+    document.getElementById("Pass").value = password_generator(8);
+
 </script>

@@ -12,6 +12,7 @@ using Studentski_hotel.Data;
 using Studentski_hotel.Helper;
 using Studentski_hotel.Models.Recepcija;
 using cloudscribe.Pagination.Models;
+using Studentski_hotel.Interface;
 
 namespace Studentski_hotel.Controllers
 {
@@ -21,13 +22,16 @@ namespace Studentski_hotel.Controllers
         private UserManager<Korisnik> _userManager;
         private readonly SignInManager<Korisnik> _signInManager;
         private ApplicationDbContext dbContext;
+        private IEmailService _emailService;
 
 
-        public RecepcijaController(UserManager<Korisnik> userManager, SignInManager<Korisnik> signInManager, ApplicationDbContext _dbContext)
+
+        public RecepcijaController(UserManager<Korisnik> userManager, SignInManager<Korisnik> signInManager, ApplicationDbContext _dbContext, IEmailService emailService)
         {
             _userManager = userManager;
             _signInManager = signInManager;
             dbContext = _dbContext;
+            _emailService = emailService;
         }
 
         public IActionResult Index()
@@ -316,6 +320,22 @@ namespace Studentski_hotel.Controllers
             dbContext.Add(ugovor);
             var Primljeni = dbContext.Students.Find(admir.StudentID);
             Primljeni.Uselio = true;
+            if (Primljeni.KorisnikID == null)
+            {
+                var korisnik = new Korisnik();
+                korisnik.Email = Primljeni.Email;
+                korisnik.UserName = Primljeni.Email;
+                korisnik.EmailConfirmed = true;
+                //korisnik.PhoneNumber = Primljeni;
+
+                IdentityResult result = _userManager.CreateAsync(korisnik, admir.Password).Result;
+                if (!result.Succeeded)
+                {
+                    return Content("errors: " + string.Join('|', result.Errors));
+                }
+                Primljeni.Korisnik = korisnik;
+                PosaljiMail(Primljeni.Email, admir.Password);
+            }
             dbContext.SaveChanges();
             return Redirect("/Recepcija/DetaljiPrikazSoba?SobaID=" + admir.SobaID);
         }
@@ -333,7 +353,7 @@ namespace Studentski_hotel.Controllers
                Ime = b.Ime,
                Prezime = b.Prezime,
                Uselio = b.Uselio,
-               Soba = dbContext.Ugovors.Where(c => c.StudentID == b.ID).Select(a => a.Soba.BrojSobe).FirstOrDefault(),
+               Soba = dbContext.Ugovors.Where(c => c.StudentID == b.ID && c.DatumIseljenja==null).Select(a => a.Soba.BrojSobe).FirstOrDefault(),
                BrojKartice = dbContext.Ugovors.Where(c => c.StudentID == b.ID).Select(a => a.Kartica.BrojKartice).FirstOrDefault(),
 
            }).ToList();
@@ -384,7 +404,7 @@ namespace Studentski_hotel.Controllers
         }
         public IActionResult IseliStudenta(int StudentID)
         {
-            var model = dbContext.Ugovors.Where(a => StudentID == a.StudentID).FirstOrDefault();
+            var model = dbContext.Ugovors.Where(a => StudentID == a.StudentID && a.DatumIseljenja==null).FirstOrDefault();
             model.DatumIseljenja = DateTime.Now.ToString("dd/MM/yyyyy");
             var student = dbContext.Students.Find(StudentID);
             student.Uselio = false;
@@ -392,7 +412,7 @@ namespace Studentski_hotel.Controllers
             return Redirect(url: "/Recepcija/DetaljiPrikazStudenata?StudentID=" + StudentID);
         }
 
-        public  IActionResult PrikazZahtjeva(int pageNumber = 1, int pageSize = 6)
+        public  IActionResult PrikazZahtjeva(int pageNumber = 1, int pageSize = 8)
         {
             int ExcludeRecords = (pageSize * pageNumber) - pageSize;
             var model = dbContext.Zahtjevs.Select(a => new PrikazZahtjevaVM.Row
@@ -402,9 +422,9 @@ namespace Studentski_hotel.Controllers
                 Zahtjev = a.VrstaZahtjeva.Naziv,
                 Datum = a.Datum,
                 Soba = a.Ugovor.Soba.BrojSobe
-            }).Skip(ExcludeRecords).Take(pageSize);
+            }).OrderByDescending(a=>a.Datum).Skip(ExcludeRecords).Take(pageSize);
             int brojac = dbContext.Zahtjevs.Count();
-            var Model = new PrikazZahtjevaVM();
+            //var Model = new PrikazZahtjevaVM();
             var result = new PagedResult<PrikazZahtjevaVM.Row>
             {
                 Data = model.AsNoTracking().ToList(),
@@ -414,6 +434,12 @@ namespace Studentski_hotel.Controllers
             };
             return View(result);
         }
-
+        public async void PosaljiMail(string mail,string password)
+        {
+            await _emailService.SendEmailAsync(mail, "Studentski hotel Mostar", "<h1>Vasi pristupni podaci su sledeci </h1>" +
+                     $"<p>E-mail : {mail}</p>" +
+                    $"<p>Sifra : {password}</p>");
+               
+        }
     }
 }

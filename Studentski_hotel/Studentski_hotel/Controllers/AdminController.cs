@@ -116,7 +116,7 @@ namespace Studentski_hotel.Controllers
                 korisnik = new Korisnik();
                 korisnik.Email = admir.email;
                 korisnik.UserName = admir.email;
-                //korisnik.EmailConfirmed = true;
+                korisnik.EmailConfirmed = true;
                 korisnik.PhoneNumber = admir.mobitel;
                 
                 IdentityResult result = _userManager.CreateAsync(korisnik, admir.password).Result;

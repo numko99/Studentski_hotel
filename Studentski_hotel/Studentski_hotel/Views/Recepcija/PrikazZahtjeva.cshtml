@@ -1,8 +1,13 @@
 ﻿<style>
-    .klasa {
-        margin: 10px;
-        width: 20%;
+    .klasa2 {
+        background-color: #567d5d;
+        color: white;
     }
+
+        .klasa2:hover {
+            color: white;
+            background-color: #263829;
+        }
 </style>
 @{
     ViewData["Title"] = "Pretraga zahtjeva";
@@ -14,17 +19,19 @@
 @addTagHelper *, cloudscribe.Web.Pagination
 
 
-<partial name="_ButtonsPartial"/>
+<partial name="_ButtonsPartial" />
 
 
-<table class="table table-striped">
-    <tr>
-        <th>Ime i prezime</th>
-        <th>Zahtjev</th>
-        <th>Datum</th>
-        <th>Broj sobe</th>
-        <th></th>
-    </tr>
+<table class="table table-borderless table-striped" id="SignalTabela">
+    <thead>
+        <tr>
+            <th>Ime i prezime</th>
+            <th>Zahtjev</th>
+            <th>Datum</th>
+            <th>Broj sobe</th>
+            <th></th>
+        </tr>
+    </thead>
     @foreach (var item in Model.Data)
     {
         <tr>
@@ -32,9 +39,12 @@
             <td>@item.Zahtjev</td>
             <td>@item.Datum</td>
             <td>@item.Soba</td>
-            <td><button class="btn btn-success">Pregled</button></td>
+            <td><button class="btn klasa2">Pregled</button></td>
         </tr>
     }
 </table>
 <partial name="_PaginationPartial" view-data="ViewData" model="Model" />
-
+<script src="~/lib/jquery/dist/jquery.min.js"></script>
+<script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+<script src="~/lib/signalr/dist/browser/signalr.js"></script>
+<script src="~/js/site2.js" asp-append-version="true"></script>

@@ -2,7 +2,18 @@
     Layout = null;
 }
 @model Studentski_hotel.Models.Recepcija.PrikazStudenataVM
-<table class="table table-striped">
+
+<style>
+    .klasa2 {
+        background-color: #567d5d;
+        color: white;
+    }
+        .klasa2:hover {
+            color: white;
+            background-color: #263829;
+        }
+</style>
+<table class="table table-borderless table-striped">
     <thead>
         <tr>
             <th>Ime i prezime</th>
@@ -31,7 +42,7 @@
                 <td>/</td>
                 <td>/</td>
             }
-            <td><button class="btn btn-success" onclick="window.location='/Recepcija/DetaljiPrikazStudenata?StudentID='+@item.ID">Pregled</button></td>
+            <td><button class="btn klasa2" onclick="window.location='/Recepcija/DetaljiPrikazStudenata?StudentID='+@item.ID">Pregled</button></td>
         </tr>
     }
 

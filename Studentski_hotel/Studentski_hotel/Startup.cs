@@ -16,6 +16,7 @@ using DBdata.EntityModels;
 using Studentski_hotel.Interface;
 using Studentski_hotel.Services;
 using ReflectionIT.Mvc.Paging;
+using Studentski_hotel.notHub;
 
 namespace Studentski_hotel
 {
@@ -42,13 +43,18 @@ namespace Studentski_hotel
            
             services.AddTransient<IKonkursService, KonkursService>();
             services.AddTransient<IEmailService, EmailService>();
+            services.AddTransient<IAdminService, AdminService>();
 
             services.AddCloudscribePagination();
+            services.AddSignalR();
+            services.AddCors();
+         
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
+            app.UseCors(options => options.WithOrigins("http://localhost:3000").AllowAnyHeader().AllowAnyMethod());
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
@@ -74,6 +80,8 @@ namespace Studentski_hotel
                     name: "default",
                     pattern: "{controller=Home}/{action=Index}/{id?}");
                 endpoints.MapRazorPages();
+                endpoints.MapHub<NotHub>("/notHub");
+
             });
         }
     }

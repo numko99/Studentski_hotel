@@ -17,6 +17,7 @@ namespace Studentski_hotel.Models.Recepcija
         public List<SelectListItem> BrojKartice { get; set; }
         public int BrojKarticeID { get; set; }
         public string DatumUseljenja { get; set; }
+        public string Password { get; set; }
     }
 
 }
