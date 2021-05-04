@@ -19,9 +19,12 @@ namespace Studentski_hotel.Models.Admin
         //public string Mjesto_izdavanja_LK { get; set; }
         public DateTime DatumRodjenja { get; set; }
 
+        public DateTime DatumZaposlenja { get; set; }
+
         public string Adresa { get; set; }
         public List<SelectListItem> MjestoStanovanja;
         public int MjestoStanovanjaID { get; set; }
+        public string PostanskiBroj { get; set; }
 
         public string email { get; set; }
         public string password { get; set; }

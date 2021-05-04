@@ -83,13 +83,16 @@ namespace Studentski_hotel.Controllers
                     PolID = a.PolID,
                     mobitel = a.Korisnik.PhoneNumber,
                     Adresa = a.Lokacija.Adresa,
+                    PostanskiBroj= a.Lokacija.PostanskiBroj,
                     MjestoStanovanjaID = a.Lokacija.MjestoStanovanjaID,
                     KantonID = a.Lokacija.KantonID,
                     email = a.Korisnik.Email,
                     KorisnikID = a.KorisnikID,
                     LokacijaID = a.LokacijaID,
                     TipKorisnika = 1,
-                    
+                    DatumZaposlenja = Convert.ToDateTime(a.DatumZaposlenja),
+
+
 
                 }).FirstOrDefault();
                
@@ -126,6 +129,7 @@ namespace Studentski_hotel.Controllers
                 }
                 lokacija = new Lokacija();
                 lokacija.Adresa = admir.Adresa;
+                lokacija.PostanskiBroj = admir.PostanskiBroj;
                 lokacija.MjestoStanovanjaID = admir.MjestoStanovanjaID;
                 lokacija.KantonID = admir.KantonID;
                 dbContext.Add(lokacija);
@@ -162,7 +166,10 @@ namespace Studentski_hotel.Controllers
             osoblje.Ime = admir.Ime;
             osoblje.Prezime = admir.Prezime;
             osoblje.PolID = admir.PolID;
-            osoblje.DatumRodjenja = admir.DatumRodjenja.ToString("dd/MM/yyyy");
+            osoblje.DatumRodjenja = admir.DatumRodjenja.ToString("MM/dd/yyyy");
+            osoblje.DatumZaposlenja = admir.DatumZaposlenja.ToString("MM/dd/yyyy");
+
+
 
 
 
